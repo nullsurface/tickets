@@ -1,10 +1,11 @@
 package v1
 
 import (
-  "net/http"
-  "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"tickets/processor"
 )
 
 func GetTicketNumber(c *gin.Context) {
-  c.IndentedJSON(http.StatusOK, "YUH")
+	c.IndentedJSON(http.StatusOK, processor.GetNextTicketNumber())
 }

@@ -4,12 +4,13 @@ import (
   "encoding/csv"
   "log"
   "strconv"
+  "os"
 )
 
-TICKET_FILE int = "./persistence/tickets.csv"
+const TICKET_FILE = "./persistence/tickets.csv"
 
 func GetNextTicketNumber() int {
-  f, err =: os.OpenFile(TICKET_FILE, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)  
+  f, err := os.OpenFile(TICKET_FILE, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)  
   if err != nil {
         log.Fatal(err)
   }
@@ -20,16 +21,22 @@ func GetNextTicketNumber() int {
   if err != nil {
       log.Fatal(err)
   }
-
-  lastIndex, err = strconv.Atoi(data[len(data)-1][0])
-  if err != nil {
-    log.Fatal(err)
-  }
-  
   csvWriter := csv.NewWriter(f)
   defer csvWriter.Flush()
 
-  newTicket []string{lastIndex + 1}
+  lastIndex := -1
+  if len(data) == 0 {
+    csvHeaders := []string{"index"}
+    csvWriter.Write(csvHeaders) 
+  } else {
+    lastIndex, err = strconv.Atoi(data[len(data)-1][0])
+    if err != nil {
+      log.Fatal(err)
+    }
+  }
+ 
+
+  newTicket := []string{string(lastIndex + 1)}
   csvWriter.Write(newTicket) 
   return lastIndex + 1
 }
