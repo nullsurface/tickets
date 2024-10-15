@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"log"
 	"os"
+	"strconv"
 )
 
 func ValidTicketID(ticketID int) bool {
@@ -18,9 +19,10 @@ func ValidTicketID(ticketID int) bool {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	for id := range data {
-		if id == ticketID {
+	log.Print(data)
+	for _, row := range data {
+		id, err := strconv.Atoi(row[0])
+		if err == nil && ticketID == id {
 			return true
 		}
 	}

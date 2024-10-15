@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 	"tickets/api/v1"
+  "sync"
 )
+
 
 func main() {
 	// Setup file server
@@ -13,9 +15,10 @@ func main() {
 	http.Handle("/", pages)
 
 	// Setup API
+  var m sync.Mutex
 	router := gin.Default()
-	router.GET("/new-ticket", v1.GetNewTicketID)
-  router.GET("/verify-ticket/:id", v1.VerifyTicketID)
+	router.GET("/new-ticket", v1.GetNewTicketID(&m))
+  router.GET("/verify-ticket/:id", v1.VerifyTicketID(&m))
 	go router.Run()
 
 	err := http.ListenAndServe(":3333", nil)
